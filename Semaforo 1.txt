@@ -1,0 +1,74 @@
+// Semáforo coches y peatones sencillo en Arduino
+int tiempoCoches = 6000;
+int tiempoPreparacion = 3000;
+int tiempoPeatones = 4000;
+const int Trigger = 28;
+const int Echo = 30;
+ 
+void setup(){
+  // Sensor
+  // semaforo coches
+  pinMode(10, OUTPUT);    // Rojo
+  pinMode(9, OUTPUT);     // Amarillo
+  pinMode(8, OUTPUT);     // Verde
+  // semaforo peatones
+  pinMode(3, OUTPUT);     // Rojo
+  pinMode(2, OUTPUT);     // Verde
+  pinMode(22, INPUT);     // Botton
+  Serial.begin(9600);     // Incializacion de la comunicacion
+  pinMode(Trigger, OUTPUT);    // Trigger 
+  pinMode(Echo, INPUT);     // Echo
+  digitalWrite(Trigger, LOW);  // Inicializamos el tigger en 0
+}
+
+void loop() {
+  int Bot_Pea = digitalRead(22);
+  
+  long t; // Time que demora en llegar el echo
+  long d; // Distancia (cm)
+
+  digitalWrite(Trigger,HIGH);
+  delayMicroseconds(10);  // Enviamos un pulso de 10us
+  digitalWrite(Trigger,LOW); 
+  
+  
+  while(Bot_Pea == 1){
+
+      digitalWrite(10, HIGH); // rojo encendido
+      digitalWrite(2, HIGH);  // verde peatones encendido
+      digitalWrite(3, LOW);   // rojo peatones apagado
+      delay(tiempoCoches);
+      Bot_Pea=0;              
+    }
+  if(Bot_Pea == 0){
+          t = pulseIn(Echo, HIGH);
+          d = t/59;
+          Serial.print("Distancia: ");  // Enviamos serialmente el valor de la distancia 
+          Serial.print(d);
+          Serial.print("cm");
+          Serial.println();
+          delay(100);   // Pausa de 100ms
+          
+          digitalWrite(10, HIGH); // rojo encendido
+          digitalWrite(2, HIGH);  // verde peatones encendido
+          digitalWrite(3, LOW);   // rojo peatones apagado
+          delay(tiempoPreparacion);
+          digitalWrite(9, HIGH);  // amarillo encendido
+          digitalWrite(2, LOW);   // verde peatones apagado
+          digitalWrite(3, HIGH);  // rojo peatones encendido
+          delay (tiempoPreparacion); 
+          digitalWrite(8, HIGH);  // verde encendido
+          digitalWrite(9, LOW);  // amarilo apagado
+          digitalWrite(10, LOW);  // rojo apagado
+          digitalWrite(2, LOW);   // verde peatones apagado
+          digitalWrite(3, HIGH);  // rojo peatones encendido
+          delay(tiempoPeatones);
+          digitalWrite(9, HIGH);  // amarillo encendido
+          digitalWrite(8, LOW);   // verde apagado
+          delay(tiempoPreparacion);
+          digitalWrite(9, LOW);   // amarillo apagado
+
+                    
+    }
+  
+}
