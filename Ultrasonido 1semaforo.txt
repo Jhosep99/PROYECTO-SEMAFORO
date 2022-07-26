@@ -1,0 +1,57 @@
+const int EchoPin = 3;
+const int TriggerPin = 2;
+const int LedPinVerde = 13;
+const int LedPinAmarillo = 12;
+const int LedPinRojo = 11;
+
+void setup() {
+   Serial.begin(9600);
+   pinMode(TriggerPin, OUTPUT);
+   pinMode(EchoPin, INPUT);
+   pinMode(LedPinVerde, OUTPUT);
+   pinMode(LedPinAmarillo, OUTPUT);
+   pinMode(LedPinRojo, OUTPUT);
+   digitalWrite(LedPinVerde, LOW);
+   digitalWrite(LedPinAmarillo, LOW);
+   digitalWrite(LedPinRojo, LOW);
+}
+
+void loop() {
+   int cm = ping(TriggerPin, EchoPin);
+   Serial.println("Distancia: "+(String) cm +"cm");
+   //Serial.println(cm);
+   
+   delay(1000);
+}
+
+int ping(int TriggerPin, int EchoPin) {
+   long duration, distanceCm;
+   
+   digitalWrite(TriggerPin, LOW);  //para generar un pulso limpio ponemos a LOW 4us
+   delayMicroseconds(4);
+   digitalWrite(TriggerPin, HIGH);  //generamos Trigger (disparo) de 10us
+   delayMicroseconds(10);
+   digitalWrite(TriggerPin, LOW);
+   
+   duration = pulseIn(EchoPin, HIGH);  //medimos el tiempo entre pulsos, en microsegundos
+   
+   distanceCm = duration * 10 / 292/ 2;   //convertimos a distancia, en cm
+
+   if (distanceCm >= 20) {
+        digitalWrite(LedPinVerde , LOW);
+        digitalWrite(LedPinAmarillo , LOW);
+        digitalWrite(LedPinRojo , HIGH);
+                      }
+else if((distanceCm <= 19) && (distanceCm >= 11)){
+        digitalWrite(LedPinVerde , LOW);
+        digitalWrite(LedPinRojo , LOW);
+        digitalWrite(LedPinAmarillo , HIGH);
+       
+} 
+else if (distanceCm <=10) {
+        digitalWrite(LedPinVerde , HIGH);
+        digitalWrite(LedPinAmarillo , LOW);
+        digitalWrite(LedPinRojo , LOW);
+} 
+   return distanceCm;
+}

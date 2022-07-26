@@ -1,0 +1,355 @@
+// Definicion de puertos
+int tiempoCambio = 1500; // Tiempo de espera entre transición de LEDs
+int tiempoEspera = 3000; // Tiempo de espera hasta comenzar transición
+
+const int LedVrojo1=2;         //LEDS VEHICULOS
+const int LedVamarillo1=3;
+const int LedVverde1=4;
+const int LedVrojo2=5;
+const int LedVamarillo2=6;
+const int LedVverde2=7;
+const int LedVrojo3=8;
+const int LedVamarillo3=9;
+const int LedVverde3=10;
+const int LedVrojo4=11;
+const int LedVamarillo4=12;
+const int LedVverde4=13;
+
+const int LedProjo1 = 30;       //LEDS PEATONALES
+const int LedPverde1 = 31;
+const int LedProjo2 = 32;
+const int LedPverde2 = 33;
+const int LedProjo3 = 34;
+const int LedPverde3 = 35;
+const int LedProjo4 = 36;
+const int LedPverde4 = 37;
+
+// SENSORES
+
+const int trigPin1 = 38;    // TRIG pin
+const int echoPin1 = 39;    // ECHO pin
+const int trigPin2 = 40;    // TRIG pin
+const int echoPin2 = 41;    // ECHO pin
+
+const int Pulsador1 = 42;       //Pines de botones para paso peatonal
+const int Pulsador2 = 43;
+const int Pulsador3 = 44;
+const int Pulsador4 = 45;
+
+class semaforo{
+
+    public:
+    int LedVverde;
+    int LedVamarillo;
+    int LedVrojo;
+    int LedProjo;
+    int LedPverde;
+
+    public:
+    semaforo(int LedVverde, int LedVrojo, int LedVamarillo, int LedProjo, int LedPverde){
+
+          this->LedVverde = LedVverde;
+          this->LedVrojo = LedVrojo;
+          this->LedVamarillo = LedVamarillo;
+          this->LedProjo = LedProjo;
+          this->LedPverde = LedPverde;
+          
+      }
+
+    void setSemaforo(int Led, int peticion){
+
+      if(peticion==1)
+      {
+          digitalWrite(Led,HIGH);
+      }
+      else{
+        digitalWrite(Led,LOW);
+      }
+      
+      }
+    
+    void SemaInicial(){
+      
+      digitalWrite(LedVrojo,HIGH);
+      delay(tiempoCambio);
+    
+    }
+    
+    void encenderSema(){
+          
+      delay(tiempoCambio);
+      digitalWrite(LedVrojo,LOW);
+      digitalWrite(LedPverde,LOW);
+      digitalWrite(LedVamarillo,HIGH);
+      delay(tiempoCambio);
+      digitalWrite(LedVverde,HIGH);
+      digitalWrite(LedProjo,HIGH);
+      digitalWrite(LedVamarillo,LOW);
+      delay(tiempoEspera);
+      delay(tiempoCambio);
+      
+    }
+    
+     void apagarSema(){
+    
+      delay(tiempoCambio);
+      digitalWrite(LedVverde,LOW);
+      digitalWrite(LedProjo,LOW);
+      delay(tiempoCambio);
+      digitalWrite(LedVamarillo,HIGH);
+      delay(tiempoCambio);
+      digitalWrite(LedVrojo,HIGH);
+      digitalWrite(LedPverde,HIGH);
+      digitalWrite(LedVamarillo,LOW);    
+      
+    }
+  
+  int getSemaforo(){
+    
+    return LedVverde;
+  
+  }
+  
+  };
+// Creacion Semaforos  
+semaforo semaforo1(LedVverde1,LedVrojo1,LedVamarillo1,LedProjo1,LedPverde1);
+semaforo semaforo2(LedVverde2,LedVrojo2,LedVamarillo2,LedProjo2,LedPverde2);
+semaforo semaforo3(LedVverde3,LedVrojo3,LedVamarillo3,LedProjo3,LedPverde3);
+semaforo semaforo4(LedVverde4,LedVrojo4,LedVamarillo4,LedProjo4,LedPverde4);
+
+void setup() {
+
+  Serial.begin(9600);
+  
+  // Vehiculos
+  pinMode(LedVrojo1, OUTPUT);   
+  pinMode(LedVamarillo1, OUTPUT);
+  pinMode(LedVverde1, OUTPUT);
+  pinMode(LedVrojo2, OUTPUT);
+  pinMode(LedVamarillo2, OUTPUT);
+  pinMode(LedVverde2, OUTPUT);
+  pinMode(LedVrojo3, OUTPUT);
+  pinMode(LedVamarillo3, OUTPUT);
+  pinMode(LedVverde3, OUTPUT);
+  pinMode(LedVrojo4, OUTPUT);
+  pinMode(LedVamarillo4, OUTPUT);
+  pinMode(LedVverde4, OUTPUT);
+
+  // Peatones
+  pinMode(LedProjo1, OUTPUT);
+  pinMode(LedPverde1, OUTPUT);
+  pinMode(LedProjo2, OUTPUT);
+  pinMode(LedPverde2, OUTPUT);
+  pinMode(LedProjo3, OUTPUT);
+  pinMode(LedPverde3, OUTPUT);
+  pinMode(LedProjo4, OUTPUT);
+  pinMode(LedPverde4, OUTPUT);
+
+  //Puladores  
+  pinMode(Pulsador1, INPUT);
+  pinMode(Pulsador2, INPUT);
+  pinMode(Pulsador3, INPUT);
+
+  // Sensores
+
+  pinMode(trigPin1, OUTPUT);  
+  pinMode(echoPin1, INPUT);
+  pinMode(trigPin2, OUTPUT);
+  pinMode(echoPin2, INPUT);
+  
+  // MOMENTO CERO
+  
+  digitalWrite(LedVrojo1, HIGH);
+  digitalWrite(LedVamarillo1, LOW);
+  digitalWrite(LedVverde1, LOW);
+  digitalWrite(LedProjo1, LOW);
+  digitalWrite(LedPverde1, LOW);
+  digitalWrite(LedVrojo2, HIGH);
+  digitalWrite(LedVamarillo2, LOW);
+  digitalWrite(LedVverde2, LOW);
+  digitalWrite(LedProjo2, LOW);
+  digitalWrite(LedPverde2, LOW);
+  digitalWrite(LedVrojo3, HIGH);
+  digitalWrite(LedVamarillo3, LOW);
+  digitalWrite(LedVverde3, LOW);
+  digitalWrite(LedProjo3, LOW);
+  digitalWrite(LedPverde3, LOW);
+  digitalWrite(LedVverde4, LOW);
+  digitalWrite(LedProjo4, HIGH);
+  digitalWrite(LedPverde4, LOW);
+  digitalWrite(LedProjo4, LOW);
+  digitalWrite(LedPverde4, LOW);
+}
+
+void loop() {
+
+  int acum=0,distancia1=0,distancia2=0;
+  bool bandera1,bandera2 = true;
+  
+  // Medimos las distancias de los sensores
+  distancia1 = distanciaSensor(trigPin1,echoPin1);
+  distancia2 = distanciaSensor(trigPin2,echoPin2);
+  
+  // Conmutamos los semaforos 
+ ;
+  // Semaforo 1  
+  if(conmutaSemaforos(distancia1,distancia2)==2)
+  {
+  semaforo1.encenderSema();
+  // Peaton 1  
+  if(estado(semaforo1.getSemaforo())==1 && digitalRead(Pulsador1)==HIGH)
+  {
+    semaforo1.apagarSema();
+  }
+  delay(tiempoEspera);
+  semaforo1.apagarSema();
+  }
+  else{
+        semaforo1.encenderSema();
+        if(estado(semaforo1.getSemaforo())==1 && digitalRead(Pulsador1)== HIGH){
+          semaforo1.apagarSema();
+        }
+        delay(tiempoEspera);
+        semaforo1.apagarSema();
+  }
+
+  // Semaforo 2 
+  if(conmutaSemaforos(distancia1,distancia2)==1){    
+  semaforo2.encenderSema();
+  // Peaton 2  
+  if(estado(semaforo2.getSemaforo())==2 && digitalRead(Pulsador2)==HIGH)
+  {
+    semaforo2.apagarSema();
+  }
+  delay(tiempoEspera);
+  semaforo2.apagarSema();
+  }
+   else{
+        semaforo2.encenderSema();
+        if(estado(semaforo2.getSemaforo())==1 && digitalRead(Pulsador2)== HIGH){
+          semaforo2.apagarSema();
+        }
+        delay(tiempoEspera);
+        semaforo2.apagarSema();
+  }
+
+  // Medimos las distancias de los sensores
+  distancia1 = distanciaSensor(trigPin1,echoPin1);
+  distancia2 = distanciaSensor(trigPin2,echoPin2);
+  Serial.println("Distancia1: "+(String) distancia1 +"cm"); 
+  Serial.println("Distancia2: "+(String) distancia2 +"cm"); 
+  
+  // Conmutamos los semaforos 
+  conmutaSemaforos(distancia1,distancia2);
+  
+  // Semaforo 3
+  semaforo3.encenderSema();
+  // Peaton 3
+  if(estado(semaforo3.getSemaforo())==3 && digitalRead(Pulsador3)==HIGH)
+  {
+    semaforo3.apagarSema();
+  }
+  delay(tiempoEspera);
+  semaforo3.apagarSema();
+
+  // Medimos las distancias de los sensores
+  distancia1 = distanciaSensor(trigPin1,echoPin1);
+  distancia2 = distanciaSensor(trigPin2,echoPin2);
+  
+  // Conmutamos los semaforos 
+  conmutaSemaforos(distancia1,distancia2);
+
+  // Semaforo 4
+  semaforo4.encenderSema();
+  // Peaton 4
+  if(estado(semaforo4.getSemaforo())==4 && digitalRead(Pulsador4)==HIGH)
+  {
+    semaforo4.apagarSema();
+  }
+  delay(tiempoEspera);
+  semaforo4.apagarSema();
+  
+}
+
+int estado(int Led){
+  
+  if(Led==4)
+  {
+    return 1;
+  }
+  if(Led==7)
+  {
+    return 2;
+  }
+   if(Led==10)
+  {
+    return 3;
+  }
+  if(Led==13)
+  {
+    return 4;
+  }
+  
+}
+
+float distanciaSensor(int trigPin,int echoPin){
+
+  // Se genera pulsos de 10 us
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Se mide la duracion mediante el pin ECHO
+  int duracion = pulseIn(echoPin, HIGH);
+
+  // calcula la distancia
+  float distancia = 0.017 * duracion;
+  
+  return distancia;
+}
+
+int PeticionSensor(float distancia){
+  
+  if(distancia >= 30 && distancia <= 40)
+  { 
+   return 1;
+  }
+  return 0;
+}
+
+int conmutaSemaforos(float distanciaSensor1,int distanciaSensor2){
+  int cont1=0,cont2=0,suma=0;  
+// Sensor Ultrasonico 1
+  if(PeticionSensor(distanciaSensor1)!=0)
+  {cont1=1;}
+  // Sensor Ultrasonico 2
+  if(PeticionSensor(distanciaSensor2)!=0)
+  {cont2=2;}
+
+  suma=cont1+cont2;
+  
+  switch(suma)
+  {
+    case 1:
+      semaforo1.encenderSema();
+      delay(tiempoEspera);
+      semaforo1.apagarSema();
+      return 1;
+      break;
+    case 2:
+      semaforo2.encenderSema();
+      delay(tiempoEspera);
+      semaforo2.apagarSema();   
+      return 2;
+      break;
+    case 3:
+      semaforo1.encenderSema();
+      delay(tiempoEspera);
+      semaforo1.apagarSema();
+      semaforo2.encenderSema();
+      delay(tiempoEspera);
+      semaforo2.apagarSema();
+      return 3;
+      break;
+  }
+}
